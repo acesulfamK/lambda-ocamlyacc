@@ -11,3 +11,4 @@ rule token = parse
   | ')'            { RPAREN }
   | ['a'-'z'] as var { VAR(var) }
   | eof            { raise Eof }
+  
