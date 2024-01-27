@@ -18,3 +18,11 @@
 print_ltree: ltreeの文字列表示
 
 sbst_var ltree a b: ltree の中での変数記号aを変数記号bに変える。
+
+redu_point_search
+- numの扱い: 相場先生の授業における木構造の符号化を0,1列で行う
+
+# 参考文献
+
+リダクションにおける変数変換ルール
+- barendregt p.578
