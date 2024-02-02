@@ -1,4 +1,4 @@
-let debug = true
+let debug = false
 (* 整数のリストを文字列に変換する関数 *)
 
 let print_string_list lst =
@@ -67,7 +67,7 @@ let char_set = ['a'; 'b'; 'c'; 'd'; 'e'; 'f'; 'g'; 'h'; 'i'; 'j'; 'k'; 'l'; 'm']
   
 let rec get_a_var char_set ignore = 
   match char_set with
-  [] -> let _ = print_endline "char_set is empty" in Var('$')
+  [] -> let _ = print_endline "Error: char_set is empty" in Var('$')
   | x::xs ->
     if (List.mem (Var x) ignore)
       then (get_a_var xs ignore)
@@ -75,23 +75,23 @@ let rec get_a_var char_set ignore =
 
 
 let rec sbst_with_check trm v trn = 
-  let () = Printf.printf "sbst log: trm = %s, v = %s, trn = %s\n" (print_ltree trm) (print_ltree v) (print_ltree trn) in
+  let () = if debug then Printf.printf "sbst log: trm = %s, v = %s, trn = %s\n" (print_ltree trm) (print_ltree v) (print_ltree trn) in
   match trm with
   Var x -> 
-    let () = Printf.printf "sbst log: trm is Value!!\n" in
+    let () = if debug then Printf.printf "sbst log: trm is Value!!\n" in
     if ((Var x) = v)
     then 
-      let () = Printf.printf "sbst log: Substitute!!\n" in
+      let () = if debug then Printf.printf "sbst log: Substitute!!\n" in
       trn
     else (Var x)
-  | Abst(abv, m_1) -> 
-    let () = Printf.printf "sbst log: trm is Abstruct, abv = %s\n" (print_ltree abv);
-        Printf.printf "sbst log: fv of trm: %s, fv of trm %s\n" (print_fv_list trm)  (print_fv_list trn) in 
+  | Abst(abv, m_1) ->
+    let () = if debug then Printf.printf "sbst log: trm is Abstruct, abv = %s\n" (print_ltree abv);
+        if debug then Printf.printf "sbst log: fv of trm: %s, fv of trm %s\n" (print_fv_list trm)  (print_fv_list trn) in 
     if (abv = v) then
       Abst(abv, m_1)
     else if (check_fv trn abv && check_fv m_1 v)
       then 
-        let () = Printf.printf "sbst log: This is the abst worst pattern!!\n" in
+        let () = if debug then Printf.printf "sbst log: This is the abst worst pattern!!\n" in
         let nv = get_a_var char_set ((fv_list m_1) @ (fv_list trn)) in
         sbst_with_check (Abst(nv, sbst_with_check m_1 abv nv)) v trn
       else
@@ -103,14 +103,14 @@ let top_redu_form lt =
     Appl(Abst(_, _), _) -> true
     | _ -> false
 let rec top_redu tr = 
-  let () = Printf.printf "In top_redu tr = %s\n" (print_ltree tr) in
+  let () = if debug then Printf.printf "top_redu log: tr = %s\n" (print_ltree tr) in
   match tr with
     Appl(Abst(y, m), n) -> sbst_with_check m y n
     | Abst(y, m) -> Abst(y, top_redu m)
     | _ -> let () = Printf.printf "Error: something went wrong in top_redu\n" in Var('$')
 
 let rec redu_from_code tr code = 
-  let () = Printf.printf "redu_from_code log: tr = %s, code = %s\n" (print_ltree tr) code in
+  let () = if debug then Printf.printf "redu_from_code log: tr = %s, code = %s\n" (print_ltree tr) code in
   match code with
   "0" -> top_redu tr
   | "1" -> top_redu tr
@@ -144,12 +144,10 @@ let l_redu tr =
   match redu_codes with
   [] -> let () = Printf.printf "This formula cannot reduce!! \n" in tr
   | h::_ -> 
-      let () = Printf.printf "Tree is %s. Code is %s\n" (print_ltree tr) h in
+      let () = if debug then Printf.printf "l_redu log: Tree is %s. Code is %s\n" (print_ltree tr) h in
   redu_from_code tr h
 
 
-let test_ltree = 
-  Abst( Var('f'), Abst( Var('x'), Appl(Appl( Var('f'), Appl (Var('f'), Var('x'))), Var('c'))))
 
 let tr2 = 
   Abst( Var('f'), Abst( Var('x'), Appl( Var('f'), Appl (Var('f'), Var('x')))))
@@ -172,36 +170,36 @@ let tr_pl=
   )
   
 let tr_add = Appl(Appl(tr_pl, tr2), tr3)
-
-
-
-let _ = Printf.printf "test1\n%s\n" (print_ltree test_ltree)
-
-let _ = Printf.printf "test2\n%s\n" (print_ltree tr2)
-
-let _ = Printf.printf "test3\n%s\n" (print_ltree tr3)
-
-let _ = Printf.printf "tr_pl\n%s\n" (print_ltree tr_pl)
-
 let tr_true = Abst(Var 'x', Appl(Var 'x', Var 'y'))
+
 let tr_false = Abst(Var 'y', Appl(Var 'x', Var 'y'))
 
-let tr_a = Appl(Var 'x', Var 'x')
-let tr_b = Abst(Var 'x', Var 'y')
-
-let _ = Printf.printf "%s\n" (print_ltree (sbst_with_check tr_true (Var 'y') tr_a)) 
+let omega = Abst(Var('x'), Appl(Var('x'), Var('x')))
 
 
+let _ = Printf.printf "2 = %s\n" (print_ltree tr2) 
 
-let _ = Printf.printf "test add = %s\n" (print_ltree (l_redu tr_add))
+let _ = Printf.printf "3 =  %s\n" (print_ltree tr3)
 
-let counter = [1;2;3;4;5;6;7;8]
+let _ = Printf.printf "plus = %s\n" (print_ltree tr_pl)
 
+let _ = Printf.printf "2 + 3 = %s\n\n" (print_ltree tr_add)
+
+let _ = Printf.printf "Reduction Start!!\n"
+
+let counter = [0;1;2;3;4;5;6;7]
 
 let process_and_print lam c=
-  Printf.printf "Times %d: lam = %s\n" c (print_ltree lam);
+  Printf.printf "Reduction %d: lam = %s\n" c (print_ltree lam);
   l_redu lam
 
 let _ = List.fold_left (fun lam c -> 
   process_and_print lam c
   ) tr_add  counter
+  
+(*
+let rec omega_redu tr n = let _ = Printf.printf "Times %d: %s\n" (n+1) (print_ltree tr) in 
+  omega_redu (l_redu tr) (n+1)
+
+let ans = omega_redu (Appl(omega, omega)) 1
+*)

@@ -1,0 +1,42 @@
+\documentclass[a4paper,11pt]{jsarticle}
+
+
+% 数式
+\usepackage{amsmath,amsfonts}
+\usepackage{bm}
+% 画像
+\usepackage[dvipdfmx]{graphicx}
+
+% urlなど
+\usepackage{url}
+\usepackage{float}
+
+\begin{document}
+
+\title{}
+\author{}
+\date{\today}
+\maketitle
+
+
+
+tr2: (@f.(@x.(f(fx))))
+tr3: (@f.(@x.(f(f(fx)))))
+tr_pr: (@m.(@n.(@f.(@x.((mf)((nf)x))))))
+tr_add: (((@m.(@n.(@f.(@x.((mf)((nf)x))))))(@f.(@x.(f(fx)))))(@f.(@x.(f(f(fx))))))
+Times 0: lam = (((@m.(@n.(@f.(@x.((mf)((nf)x))))))(@f.(@x.(f(fx)))))(@f.(@x.(f(f(fx))))))
+Times 1: lam = ((@n.(@f.(@x.(((@f.(@x.(f(fx))))f)((nf)x)))))(@f.(@x.(f(f(fx))))))
+Times 2: lam = (@f.(@x.(((@f.(@x.(f(fx))))f)(((@f.(@x.(f(f(fx)))))f)x))))
+Times 3: lam = (@f.(@x.((@x.(f(fx)))(((@f.(@x.(f(f(fx)))))f)x))))
+Times 4: lam = (@f.(@x.(f(f(((@f.(@x.(f(f(fx)))))f)x)))))
+Times 5: lam = (@f.(@x.(f(f((@x.(f(f(fx))))x)))))
+Times 6: lam = (@f.(@x.(f(f(f(f(fx)))))))
+This formula cannot reduce!! 
+Times 7: lam = (@f.(@x.(f(f(f(f(fx)))))))
+This formula cannot reduce!! 
+Times 8: lam = (@f.(@x.(f(f(f(f(fx)))))))
+This formula cannot reduce!! 
+
+
+
+\end{document}
